@@ -1,7 +1,9 @@
 require 'sinatra'
+require 'rest-client'
 
 get '/' do
-  'Hello world!'
+  # This super naive proxying doesn't pass through error codes or headers
+  RestClient.get('localhost:4567/example_dynamic_page')
 end
 
 # An example dynamic page that can be used to demonstrate the
