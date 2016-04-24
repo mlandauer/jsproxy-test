@@ -1,5 +1,4 @@
 require 'sinatra'
-require 'rest-client'
 require 'nokogiri'
 require 'phantomjs'
 
@@ -8,7 +7,7 @@ Phantomjs.path
 
 get '/' do
   # This super naive proxying doesn't pass through error codes or headers
-  content = RestClient.get('localhost:4567/example_dynamic_page')
+  content = Phantomjs.run('./phantomjs/get.js')
   # Strip script tags
   doc = Nokogiri.HTML(content)
   doc.search('script').remove
