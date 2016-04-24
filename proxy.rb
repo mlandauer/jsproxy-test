@@ -1,6 +1,10 @@
 require 'sinatra'
 require 'rest-client'
 require 'nokogiri'
+require 'phantomjs'
+
+# Will also install phantomjs if it's not already there
+Phantomjs.path
 
 get '/' do
   # This super naive proxying doesn't pass through error codes or headers
