@@ -9,8 +9,4 @@
   %body
     %p Some content below will get populated by javascript
     #example
-    %script{type: "text/babel"}
-      ReactDOM.render(
-      <h1>Hello, world!</h1>,
-      document.getElementById('example')
-      );
+    %script{type: "text/babel", src: "javascripts/helloworld.js"}
