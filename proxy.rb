@@ -53,8 +53,6 @@ def process_html(content, url)
   end
   # Find all embedded css in style attributes
   doc.search('*[style]').each do |node|
-    # TODO Actually pass a proper base url which takes into account
-    # a base override
     node['style'] = in_css_make_urls_absolute(node['style'], base_url)
   end
   doc.search('style').each do |node|
