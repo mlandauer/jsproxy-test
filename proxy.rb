@@ -8,7 +8,9 @@ require 'phantomjs'
 # N.B. modifies doc
 def convert_to_absolute_urls!(doc, url, selector, attribute)
   doc.search(selector).each do |node|
-    node[attribute] = url + URI.escape(node[attribute])
+    if node[attribute]
+      node[attribute] = url + URI.escape(node[attribute])
+    end
   end
 end
 
@@ -54,7 +56,9 @@ def process_html(content, url)
   convert_to_absolute_urls!(doc, base_url, 'a', 'href')
   # Rewrite links to point at the proxy
   doc.search('a').each do |node|
-    node['href'] = "/proxy?url=" + CGI.escape(node['href'])
+    if node['href']
+      node['href'] = "/proxy?url=" + CGI.escape(node['href'])
+    end
   end
   # Find all embedded css in style attributes
   doc.search('*[style]').each do |node|
