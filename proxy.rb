@@ -5,9 +5,11 @@ require 'phantomjs'
 # Will also install phantomjs if it's not already there
 Phantomjs.path
 
-get '/' do
+get '/proxy' do
+  url = params['url'] || 'http://localhost:4567/example_dynamic_page'
+
   # This super naive proxying doesn't pass through error codes or headers
-  content = Phantomjs.run('./phantomjs/get.js', 'http://localhost:4567/example_dynamic_page')
+  content = Phantomjs.run('./phantomjs/get.js', url)
   # Strip script tags
   doc = Nokogiri.HTML(content)
   doc.search('script').remove

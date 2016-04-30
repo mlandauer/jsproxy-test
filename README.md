@@ -49,9 +49,14 @@ and navigate to http://localhost:4567/example_dynamic_page
 Switch off javascript and you'll see the page doesn't fully load.
 
 Then, go to
-http://localhost:4567
+http://localhost:4567/proxy
 
 This page is proxying the 'example_dynamic_page'. You should see the same looking page as before. Now, switch off javascript and the page still works. Magic!
+
+You can also pass an arbitrary url to the proxy to see it in action with any page:
+
+http://localhost:4567/proxy?url=https://www.google.com.au
+
 
 
 ### Copyright & License
