@@ -13,6 +13,12 @@ get '/proxy' do
   # Strip script tags
   doc = Nokogiri.HTML(content)
   doc.search('script').remove
+  # Rewrite image urls to absolute urls
+  # And what madness. Also escaping url for cases for where
+  # people are including unescaped urls
+  doc.search('img').each do |img|
+    img['src'] = URI(url) + URI.escape(img['src'])
+  end
   doc.to_s
 end
 
