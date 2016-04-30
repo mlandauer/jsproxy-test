@@ -17,6 +17,15 @@ def convert_to_absolute_urls!(doc, url, selector, attribute)
   end
 end
 
+# In a given bit of text which is css convert all urls
+# to be absolute
+def in_css_make_urls_absolute(css, base_url)
+  css.gsub(/url\((.*)\)/) do |c|
+    url = base_url + $1
+    "url(#{url})"
+  end
+end
+
 # Will also install phantomjs if it's not already there
 Phantomjs.path
 
@@ -34,6 +43,12 @@ get '/proxy' do
   # Rewrite links to point at the proxy
   doc.search('a').each do |node|
     node['href'] = "/proxy?url=" + CGI.escape(node['href'])
+  end
+  # Find all embedded css in style attributes
+  doc.search('*[style]').each do |node|
+    # TODO Actually pass a proper base url which takes into account
+    # a base override
+    node['style'] = in_css_make_urls_absolute(node['style'], url)
   end
   doc.to_s
 end
