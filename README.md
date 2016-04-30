@@ -39,8 +39,10 @@ bundle install
 #### Running
 
 ```bash
-bundle exec ruby ./proxy.rb
+bundle exec rerun ./proxy.rb
 ```
+(This uses the rerun gem to automatically reload the sinatra app if a file changes)
+
 
 and navigate to http://localhost:4567/example_dynamic_page
 
