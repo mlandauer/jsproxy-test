@@ -25,6 +25,33 @@ So, here's a piece of the puzzle: we write a proxy, that loads an arbitrary web 
 
 This little project is an experiment in doing that.
 
+### Development
+
+#### Requirements
+
+* Ruby (I'm currently using 2.2.3 but it should work with other versions too)
+
+#### Installing
+```bash
+bundle install
+```
+
+#### Running
+
+```bash
+bundle exec ruby ./proxy.rb
+```
+
+and navigate to http://localhost:4567/example_dynamic_page
+
+Switch off javascript and you'll see the page doesn't fully load.
+
+Then, go to
+http://localhost:4567
+
+This page is proxying the 'example_dynamic_page'. You should see the same looking page as before. Now, switch off javascript and the page still works. Magic!
+
+
 ### Copyright & License
 
 Copyright Matthew Landauer. Licensed under the Affero GPL. See LICENSE file for more details.
