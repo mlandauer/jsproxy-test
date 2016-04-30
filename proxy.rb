@@ -9,9 +9,7 @@ require 'phantomjs'
 def convert_to_absolute_urls!(doc, url, selector, attribute)
   # If there's a base tag in the document it should override
   # the base url to be used for relative urls
-  if doc.at('head base')
-    url = URI(url) + doc.at('head base')['href']
-  end
+  url = html_base_url(doc, url)
   doc.search(selector).each do |node|
     node[attribute] = URI(url) + URI.escape(node[attribute])
   end
@@ -23,6 +21,14 @@ def in_css_make_urls_absolute(css, base_url)
   css.gsub(/url\((.*)\)/) do |c|
     url = base_url + $1
     "url(#{url})"
+  end
+end
+
+def html_base_url(doc, url)
+  if doc.at('head base')
+    URI(url) + doc.at('head base')['href']
+  else
+    url
   end
 end
 
