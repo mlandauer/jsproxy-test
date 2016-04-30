@@ -9,7 +9,8 @@ var system = require('system');
 function doRender(page) {
   var html = page.evaluate(function() {
     // Magically this bit will get evaluated in the context of the page
-    return document.documentElement.innerHTML;
+    // TODO Also return doctype. This currently doesn't
+    return document.documentElement.outerHTML;
   });
   console.log(html);
 
