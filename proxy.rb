@@ -29,6 +29,16 @@ def html_base_url(doc, url)
   end
 end
 
+def phantom_get(url)
+  # If there are any error messages in the console then
+  # they are returned first. The last thing returned is the html
+  # so look for that and then call everything above the console
+  # output
+  r = Phantomjs.run('./phantomjs/get.js', url.to_s)
+  s = r.split("**jksdhljasdhjwb**")
+  {console: s[0], html: s[1]}
+end
+
 # Will also install phantomjs if it's not already there
 Phantomjs.path
 
@@ -36,7 +46,8 @@ get '/proxy' do
   url = URI(params['url'] || 'http://localhost:4567/example_dynamic_page')
 
   # This super naive proxying doesn't pass through error codes or headers
-  content = Phantomjs.run('./phantomjs/get.js', url.to_s)
+  content = phantom_get(url)[:html]
+
   # Strip script tags
   doc = Nokogiri.HTML(content)
   base_url = html_base_url(doc, url)

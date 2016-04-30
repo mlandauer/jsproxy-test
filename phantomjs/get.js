@@ -12,6 +12,9 @@ function doRender(page) {
     // TODO Also return doctype. This currently doesn't
     return document.documentElement.outerHTML;
   });
+  // Put in some arbitrary text string that signals the start
+  // of the html
+  console.log("**jksdhljasdhjwb**")
   console.log(html);
 
   phantom.exit();
