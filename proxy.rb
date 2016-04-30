@@ -7,7 +7,7 @@ Phantomjs.path
 
 get '/' do
   # This super naive proxying doesn't pass through error codes or headers
-  content = Phantomjs.run('./phantomjs/get.js')
+  content = Phantomjs.run('./phantomjs/get.js', 'http://localhost:4567/example_dynamic_page')
   # Strip script tags
   doc = Nokogiri.HTML(content)
   doc.search('script').remove

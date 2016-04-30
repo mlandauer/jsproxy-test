@@ -4,7 +4,7 @@
 // ~/.phantomjs/2.1.1/darwin/bin/phantomjs phantomjs/get.js
 
 var page = require('webpage').create();
-var url = "http://localhost:4567/example_dynamic_page";
+var system = require('system');
 
 function doRender(page) {
   var html = page.evaluate(function() {
@@ -15,6 +15,13 @@ function doRender(page) {
 
   phantom.exit();
 }
+
+if (system.args.length === 1) {
+  console.log('Usage: get.js <some URL>');
+  phantom.exit();
+}
+
+var url = system.args[1];
 
 // This displays console messages from inside the page.evaluate block
 page.onConsoleMessage = function(msg) {
