@@ -39,15 +39,7 @@ def phantom_get(url)
   {console: s[0], html: s[1]}
 end
 
-# Will also install phantomjs if it's not already there
-Phantomjs.path
-
-get '/proxy' do
-  url = URI(params['url'] || 'http://localhost:4567/example_dynamic_page')
-
-  # This super naive proxying doesn't pass through error codes or headers
-  content = phantom_get(url)[:html]
-
+def process_html(content, url)
   # Strip script tags
   doc = Nokogiri.HTML(content)
   base_url = html_base_url(doc, url)
@@ -69,6 +61,17 @@ get '/proxy' do
     node.content = in_css_make_urls_absolute(node.content, base_url)
   end
   doc.to_s
+end
+
+# Will also install phantomjs if it's not already there
+Phantomjs.path
+
+get '/proxy' do
+  url = URI(params['url'] || 'http://localhost:4567/example_dynamic_page')
+
+  # This super naive proxying doesn't pass through error codes or headers
+  content = phantom_get(url)[:html]
+  process_html(content, url)
 end
 
 # An example dynamic page that can be used to demonstrate the
