@@ -16,7 +16,12 @@ end
 # to be absolute
 def in_css_make_urls_absolute(css, base_url)
   css.gsub(/url\(([^\)]*)\)/) do |c|
-    url = base_url + $1
+    begin
+      url = base_url + $1
+    rescue
+      # If we can't interpret this as a url just leave it be
+      $1
+    end
     "url(#{url})"
   end
 end
