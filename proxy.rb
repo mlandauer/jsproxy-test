@@ -7,6 +7,11 @@ require 'phantomjs'
 # people are including unescaped urls
 # N.B. modifies doc
 def convert_to_absolute_urls!(doc, url, selector, attribute)
+  # If there's a base tag in the document it should override
+  # the base url to be used for relative urls
+  if doc.at('head base')
+    url = URI(url) + doc.at('head base')['href']
+  end
   doc.search(selector).each do |node|
     node[attribute] = URI(url) + URI.escape(node[attribute])
   end
