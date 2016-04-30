@@ -73,8 +73,15 @@ get '/proxy' do
   url = URI(params['url'] || 'http://localhost:4567/example_dynamic_page')
 
   # This super naive proxying doesn't pass through error codes or headers
-  content = phantom_get(url)[:html]
-  process_html(content, url)
+  result = phantom_get(url)
+  content = process_html(result[:html], url)
+  # Now inject some javascript so that it spits out the console output from
+  # phantomjs in the console
+  doc = Nokogiri.HTML(content)
+  script_node = Nokogiri::XML::Node.new('script', doc)
+  script_node.content = result[:console].split("\n").map{|l| "console.log(\"from phantomjs: #{l}\")"}.join("\n")
+  doc.at('head').add_child(script_node)
+  doc.to_s
 end
 
 # An example dynamic page that can be used to demonstrate the
