@@ -8,7 +8,7 @@ require 'phantomjs'
 # N.B. modifies doc
 def convert_to_absolute_urls!(doc, url, selector, attribute)
   doc.search(selector).each do |node|
-    node[attribute] = URI(url) + URI.escape(node[attribute])
+    node[attribute] = url + URI.escape(node[attribute])
   end
 end
 
@@ -23,7 +23,7 @@ end
 
 def html_base_url(doc, url)
   if doc.at('head base')
-    URI(url) + doc.at('head base')['href']
+    url + doc.at('head base')['href']
   else
     url
   end
@@ -33,10 +33,10 @@ end
 Phantomjs.path
 
 get '/proxy' do
-  url = params['url'] || 'http://localhost:4567/example_dynamic_page'
+  url = URI(params['url'] || 'http://localhost:4567/example_dynamic_page')
 
   # This super naive proxying doesn't pass through error codes or headers
-  content = Phantomjs.run('./phantomjs/get.js', url)
+  content = Phantomjs.run('./phantomjs/get.js', url.to_s)
   # Strip script tags
   doc = Nokogiri.HTML(content)
   base_url = html_base_url(doc, url)
