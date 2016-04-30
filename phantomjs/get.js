@@ -25,7 +25,10 @@ var url = system.args[1];
 
 // This displays console messages from inside the page.evaluate block
 page.onConsoleMessage = function(msg) {
-  console.log('console:', msg);
+  // For the time being disable console output here.
+  // TODO Return console output by making this script return json
+  // which contains the html and the console output separately
+  //console.log('console:', msg);
 };
 
 page.open(url, function (status) {
