@@ -1,12 +1,12 @@
 // This script needs to be run using phantomjs
 //
 // Example usage:
-// ~/.phantomjs/2.1.1/darwin/bin/phantomjs phantomjs/get.js
+// ~/.phantomjs/2.1.1/darwin/bin/phantomjs phantomjs/get.js https://www.google.com.au/
 
 var page = require('webpage').create();
 var system = require('system');
 
-function doRender(page) {
+function doRender() {
   var html = page.evaluate(function() {
     // Magically this bit will get evaluated in the context of the page
     // TODO Also return doctype. This currently doesn't
@@ -26,6 +26,8 @@ if (system.args.length === 1) {
 }
 
 var url = system.args[1];
+var count = 0;
+var renderTimeout;
 
 // This displays console messages from inside the page.evaluate block
 page.onConsoleMessage = function(msg) {
@@ -35,10 +37,21 @@ page.onConsoleMessage = function(msg) {
   //console.log('console:', msg);
 };
 
+page.onResourceRequested = function(request) {
+  count += 1;
+  clearTimeout(renderTimeout);
+};
+
+page.onResourceReceived = function(response) {
+  if (response.stage == 'end') {
+    count -= 1;
+    if (count == 0) {
+      renderTimeout = setTimeout(doRender, 300);
+    }
+  }
+};
+
 page.open(url, function (status) {
-  // As a first (very rough) pass wait for a
-  // half second before rendering the page
-  setTimeout(function() {
-    doRender(page);
-  }, 500);
+  // This is the fallback in case something doesn't work with the network monitoring
+  setTimeout(doRender, 10000);
 });
