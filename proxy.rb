@@ -25,6 +25,11 @@ get '/proxy' do
   doc.search('script').remove
   convert_to_absolute_urls!(doc, url, 'img', 'src')
   convert_to_absolute_urls!(doc, url, 'link', 'href')
+  convert_to_absolute_urls!(doc, url, 'a', 'href')
+  # Rewrite links to point at the proxy
+  doc.search('a').each do |node|
+    node['href'] = "/proxy?url=" + CGI.escape(node['href'])
+  end
   doc.to_s
 end
 
