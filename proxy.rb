@@ -7,9 +7,6 @@ require 'phantomjs'
 # people are including unescaped urls
 # N.B. modifies doc
 def convert_to_absolute_urls!(doc, url, selector, attribute)
-  # If there's a base tag in the document it should override
-  # the base url to be used for relative urls
-  url = html_base_url(doc, url)
   doc.search(selector).each do |node|
     node[attribute] = URI(url) + URI.escape(node[attribute])
   end
@@ -42,10 +39,11 @@ get '/proxy' do
   content = Phantomjs.run('./phantomjs/get.js', url)
   # Strip script tags
   doc = Nokogiri.HTML(content)
+  base_url = html_base_url(doc, url)
   doc.search('script').remove
-  convert_to_absolute_urls!(doc, url, 'img', 'src')
-  convert_to_absolute_urls!(doc, url, 'link', 'href')
-  convert_to_absolute_urls!(doc, url, 'a', 'href')
+  convert_to_absolute_urls!(doc, base_url, 'img', 'src')
+  convert_to_absolute_urls!(doc, base_url, 'link', 'href')
+  convert_to_absolute_urls!(doc, base_url, 'a', 'href')
   # Rewrite links to point at the proxy
   doc.search('a').each do |node|
     node['href'] = "/proxy?url=" + CGI.escape(node['href'])
@@ -54,7 +52,7 @@ get '/proxy' do
   doc.search('*[style]').each do |node|
     # TODO Actually pass a proper base url which takes into account
     # a base override
-    node['style'] = in_css_make_urls_absolute(node['style'], url)
+    node['style'] = in_css_make_urls_absolute(node['style'], base_url)
   end
   doc.to_s
 end
