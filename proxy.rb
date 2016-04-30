@@ -19,6 +19,10 @@ get '/proxy' do
   doc.search('img').each do |img|
     img['src'] = URI(url) + URI.escape(img['src'])
   end
+  # Rewrite css urls to absolute urls
+  doc.search('link').each do |link|
+    link['href'] = URI(url) + URI.escape(link['href'])
+  end
   doc.to_s
 end
 
