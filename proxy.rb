@@ -54,6 +54,9 @@ get '/proxy' do
     # a base override
     node['style'] = in_css_make_urls_absolute(node['style'], base_url)
   end
+  doc.search('style').each do |node|
+    node.content = in_css_make_urls_absolute(node.content, base_url)
+  end
   doc.to_s
 end
 
