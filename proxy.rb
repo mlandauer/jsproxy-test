@@ -2,6 +2,16 @@ require 'sinatra'
 require 'nokogiri'
 require 'phantomjs'
 
+# Rewrite urls to absolute urls
+# And what madness. Also escaping url for cases for where
+# people are including unescaped urls
+# N.B. modifies doc
+def convert_to_absolute_urls!(doc, url, selector, attribute)
+  doc.search(selector).each do |node|
+    node[attribute] = URI(url) + URI.escape(node[attribute])
+  end
+end
+
 # Will also install phantomjs if it's not already there
 Phantomjs.path
 
@@ -13,16 +23,8 @@ get '/proxy' do
   # Strip script tags
   doc = Nokogiri.HTML(content)
   doc.search('script').remove
-  # Rewrite image urls to absolute urls
-  # And what madness. Also escaping url for cases for where
-  # people are including unescaped urls
-  doc.search('img').each do |img|
-    img['src'] = URI(url) + URI.escape(img['src'])
-  end
-  # Rewrite css urls to absolute urls
-  doc.search('link').each do |link|
-    link['href'] = URI(url) + URI.escape(link['href'])
-  end
+  convert_to_absolute_urls!(doc, url, 'img', 'src')
+  convert_to_absolute_urls!(doc, url, 'link', 'href')
   doc.to_s
 end
 
