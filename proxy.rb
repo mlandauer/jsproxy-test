@@ -74,7 +74,8 @@ end
 Phantomjs.path
 
 get '/proxy' do
-  url = URI(params['url'] || 'http://localhost:4567/example_dynamic_page')
+  default_url = "http://#{request.env['HTTP_HOST']}/example_dynamic_page"
+  url = URI(params['url'] || default_url)
 
   # This super naive proxying doesn't pass through error codes or headers
   result = phantom_get(url)
