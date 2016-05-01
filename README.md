@@ -39,7 +39,7 @@ bundle install
 #### Running
 
 ```bash
-bundle exec rerun ./proxy.rb
+bundle exec rerun proxy.rb
 ```
 (This uses the rerun gem to automatically reload the sinatra app if a file changes)
 
