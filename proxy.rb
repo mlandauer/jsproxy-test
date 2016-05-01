@@ -74,8 +74,12 @@ end
 Phantomjs.path
 
 get '/proxy' do
-  default_url = "http://#{request.env['HTTP_HOST']}/example_dynamic_page"
-  url = URI(params['url'] || default_url)
+  if params['url'].nil?
+    default_url = "http://#{request.env['HTTP_HOST']}/example_dynamic_page"
+    redirect to("/proxy?url=#{default_url}")
+  end
+
+  url = URI(params['url'])
 
   # This super naive proxying doesn't pass through error codes or headers
   result = phantom_get(url)
