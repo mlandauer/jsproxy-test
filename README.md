@@ -57,7 +57,15 @@ You can also pass an arbitrary url to the proxy to see it in action with any pag
 
 http://localhost:4567/proxy?url=https://www.google.com.au
 
+#### Deploying to Heroku
 
+To get phantomjs working on Heroku you'll need:
+
+```
+heroku buildpacks:add --index 1 https://github.com/stomita/heroku-buildpack-phantomjs
+```
+
+You need to specify the index so that phantomjs gets built first.
 
 ### Copyright & License
 
